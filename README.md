@@ -28,3 +28,28 @@ sequence or you'll have a nasty infinite loop on your hands.
     (-0.7765801046493335 0.40148224293121815 0.8737800042586443
      -0.341621481583122 0.4214790667583346)
 ```
+
+## Gorilla REPL
+
+This project uses (Gorilla REPL)[http://gorilla-repl.org/index.html] to help
+display things from this project. It's very useful in what it does. The way
+to get it started is to first, make sure all the dependencies are loaded:
+```bash
+$ lein deps
+```
+and then run the Gorilla REPL:
+```bash
+$ lein gorilla
+Gorilla-REPL: 0.3.4
+Started nREPL server on port 54780
+Running at http://127.0.0.1:54782/worksheet.html .
+Ctrl+C to exit.
+```
+Note the URL in the log message! This is where you point your browser.
+
+At this point, look to the three horizontal bars in the upper-right-hand corner.
+Click on them for actions, and then select "Load a Workspace" and then type in:
+```
+doc/uniform.clj
+```
+and load. This will show you the uniform distribution under test.
