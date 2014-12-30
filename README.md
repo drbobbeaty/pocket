@@ -70,6 +70,30 @@ sequence or you'll have a nasty infinite loop on your hands.
      22.365682296366312 32.87615573609718)
 ```
 
+### Exponential Distribution
+
+The exponential distribution is an infinite sequence created where:
+```
+v = ln(1 - x)/(-lambda)
+```
+where `x` is uniform random variable on [0, 1) and `lambda` is the _rate parameter_
+for the distribution.
+
+In clojure this is done with:
+```clojure
+(exponential lambda)
+```
+where the parameter is _**required**_ and must be positive.
+
+It's important - as with all the generators to _limit_ the data to some finite
+sequence or you'll have a nasty infinite loop on your hands.
+
+```clojure
+  => (take 5 (exponential 5))
+    (0.22165641946479245 0.12155878618865423 0.06810312651993966
+     0.21170065909517813 0.2798397169892709)
+```
+
 ## Gorilla REPL
 
 This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help

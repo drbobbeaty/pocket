@@ -39,3 +39,10 @@
         ss (or stdev 1)]
     (for [x (normal)]
       (Math/exp (+ xb (* ss x))))))
+
+(defn exponential
+  ""
+  [lambda]
+  (if (pos? lambda)
+    (for [x (uniform)]
+      (/ (Math/log (- 1 x)) (* -1 lambda)))))
