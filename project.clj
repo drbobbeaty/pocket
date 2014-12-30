@@ -9,6 +9,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  ;; nice utilities
                  [clj-time "0.6.0"]
+                 [org.clojure/math.numeric-tower "0.0.4"]
                  ;; command line option processing
                  [org.clojure/tools.cli "0.2.2"]
                  ;; logging with log4j
