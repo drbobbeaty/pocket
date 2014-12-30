@@ -47,11 +47,11 @@ Ctrl+C to exit.
 ```
 Note the URL in the log message! This is where you point your browser.
 
-![Using the correct G-REPL URL](doc/img/grepl-url.png)
+![Using the correct G-REPL URL](raw/master/doc/img/grepl-url.png)
 
 At this point, look to the three horizontal bars in the upper-right-hand corner.
 
-![Locating the G-REPL Menu](doc/img/grepl-intro.png)
+![Locating the G-REPL Menu](raw/master/doc/img/grepl-intro.png)
 
 Click on them for actions, and then select "Load a Workspace" and then type in:
 ```
@@ -59,4 +59,4 @@ doc/uniform.clj
 ```
 and load. This will show you the uniform distribution under test.
 
-![The G-REPL page for Uniform](doc/img/grepl-uniform.png)
+![The G-REPL page for Uniform](raw/master/doc/img/grepl-uniform.png)
