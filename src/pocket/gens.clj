@@ -3,7 +3,8 @@
   number generators for the different distributions, and then the business logic
   is placed on top of this so that we have business data generators, and the
   distribution is built-into these generators."
-  (:require [clojure.tools.cli :refer [cli]]
+  (:require [clojure.string :as cs]
+            [clojure.tools.cli :refer [cli]]
             [clojure.tools.logging :refer [error info infof]]
             [clojure.math.numeric-tower :as math]
             [pocket.base :as pb]))
@@ -14,9 +15,9 @@
   taking a series of people from this function and then randomly shuffling
   them and making an infinite sequence on that data."
   [n]
-  (let [lnames (->> (slurp "resources/last_names.csv") (.split #"\r"))
+  (let [lnames (->> (slurp "resources/last_names.csv") (.split #"\r") (map cs/trim))
         lcnt (count lnames)
-        fnames (->> (slurp "resources/first_names.csv") (.split #"\r"))
+        fnames (->> (slurp "resources/first_names.csv") (.split #"\r") (map cs/trim))
         fcnt (count fnames)]
     (for [i (range n)]
       (str (nth fnames (rand-int fcnt)) " " (nth lnames (rand-int lcnt))))))
@@ -30,3 +31,14 @@
   [n]
   (let [folks (pull-names (or n 10))]
     (flatten (repeatedly (partial shuffle folks)))))
+
+(defn companies
+  "Function to generate an infinite sequence of company names from the
+  list in the resources directory. This list will be a uniformly random
+  selection where there will be no guarantees about the non-duplication
+  of the names in the sequence. This is because for the business data,
+  this data can - and should - repeat."
+  []
+  (let [cos (->> (slurp "resources/companies.csv") (.split #"\n") (map cs/trim))
+        cnt (count cos)]
+    (repeatedly #(nth cos (rand-int cnt)))))
