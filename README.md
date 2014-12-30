@@ -31,25 +31,41 @@ sequence or you'll have a nasty infinite loop on your hands.
 
 ## Gorilla REPL
 
-This project uses (Gorilla REPL)[http://gorilla-repl.org/index.html] to help
+This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help
 display things from this project. It's very useful in what it does. The way
 to get it started is to first, make sure all the dependencies are loaded:
 ```bash
 $ lein deps
 ```
-and then run the Gorilla REPL:
+and then run the [Gorilla REPL](http://gorilla-repl.org/index.html):
 ```bash
 $ lein gorilla
 Gorilla-REPL: 0.3.4
-Started nREPL server on port 54780
-Running at http://127.0.0.1:54782/worksheet.html .
+Started nREPL server on port 54782
+Running at http://127.0.0.1:54784/worksheet.html .
 Ctrl+C to exit.
 ```
 Note the URL in the log message! This is where you point your browser.
 
+<center>
+  <img src="doc/img/grepl-url.png" alt="G-REPL URL" border="0" width="421"
+  height="74" />
+</center>
+
 At this point, look to the three horizontal bars in the upper-right-hand corner.
+
+<center>
+  <img src="doc/img/grepl-intro.png" alt="G-REPL" border="0" width="350"
+  height="249" />
+</center>
+
 Click on them for actions, and then select "Load a Workspace" and then type in:
 ```
 doc/uniform.clj
 ```
 and load. This will show you the uniform distribution under test.
+
+<center>
+  <img src="doc/img/grepl-uniform.png" alt="G-REPL uniform" border="0" width="350"
+  height="249" />
+</center>
