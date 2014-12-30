@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src"]
   :min-lein-version "2.3.4"
+  :plugins [[lein-gorilla "0.3.4"]]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  ;; nice utilities
                  [clj-time "0.6.0"]
