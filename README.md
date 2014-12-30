@@ -29,6 +29,47 @@ sequence or you'll have a nasty infinite loop on your hands.
      -0.341621481583122 0.4214790667583346)
 ```
 
+### Normal Distribution
+
+The standard normal (Gaussian) distribution is an infinite sequence created with:
+```clojure
+(normal mean stdev)
+```
+where the parameters are _optional_ and default to 0 and 1.
+
+It's important - as with all the generators to _limit_ the data to some finite
+sequence or you'll have a nasty infinite loop on your hands.
+
+```clojure
+  => (take 5 (normal))
+    (-0.0907230678156977 0.3229645010043943 0.7032449896635354
+     0.3105866707525134 0.5179258261515017)
+```
+
+### Log-Normal Distribution
+
+The standard log-normal distribution is an infinite sequence created where:
+```
+v = exp(mean + stdev * x)
+```
+where `x` is the Gaussian random variable with a zero mean and a standard
+deviation of 1.
+
+In clojure this is done with:
+```clojure
+(log-normal mean stdev)
+```
+where the parameters are _optional_ and default to 0 and 1.
+
+It's important - as with all the generators to _limit_ the data to some finite
+sequence or you'll have a nasty infinite loop on your hands.
+
+```clojure
+  => (take 5 (log-normal 3 1))
+    (19.324672878464074 25.44649659534456 19.66209965402554
+     22.365682296366312 32.87615573609718)
+```
+
 ## Gorilla REPL
 
 This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help

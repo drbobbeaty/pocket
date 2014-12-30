@@ -29,3 +29,13 @@
                    :when (< w 1)
                    :let [a (Math/sqrt (/ (* -2 (Math/log10 w)) w))]]
                [(+ (* u a ss) xb) (+ (* v a ss) xb)]))))
+
+(defn log-normal
+  "Simple log normal distribution with the provided mean and standard deviation.
+  If no values are supplied, then the default values are 0 and 1. These are
+  double precision numbers in the sequence."
+  [& [mean stdev]]
+  (let [xb (or mean 0)
+        ss (or stdev 1)]
+    (for [x (normal)]
+      (Math/exp (+ xb (* ss x))))))
