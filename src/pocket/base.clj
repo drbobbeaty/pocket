@@ -41,7 +41,9 @@
       (Math/exp (+ xb (* ss x))))))
 
 (defn exponential
-  ""
+  "Simple exponential distribution with the provided lambda (rate parameter).
+  In this case, there *must* be a value for the parameter - and it *must* be
+  positive. These are double precision numbers in the sequence."
   [lambda]
   (if (pos? lambda)
     (for [x (uniform)]
