@@ -110,14 +110,14 @@ of that generator into the output of the `mapped` generator.
 For instance, say I wanted to have an unfair coin toss. I could do that with
 any number of schemes, but the `mapped` function makes that easy:
 ```clojure
-  ;; define a uniform random variable from 0 to 100
-  (def und (uniform 0 100))
-  ;; define the mapping of the output
-  (def cov {:heads [0 55], :tails [55 100]})
-  ;; now define the mapped random sequence
-  (def bad-penny (mapped und cov))
+;; define a uniform random variable from 0 to 100
+(def und (uniform 0 100))
+;; define the mapping of the output
+(def cov {:heads [0 55], :tails [55 100]})
+;; now define the mapped random sequence
+(def bad-penny (mapped und cov))
 
-  => (frequencies (take 1000 (mapped und cov)))
+  => (frequencies (take 1000 bad-penny))
     {:heads 552, :tails 448}
 ```
 
