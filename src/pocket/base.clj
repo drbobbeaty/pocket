@@ -48,3 +48,20 @@
   (if (pos? lambda)
     (for [x (uniform)]
       (/ (Math/log (- 1 x)) (* -1 lambda)))))
+
+(defn mapped
+  "Function to map a given random variable generator into another random
+  variable based on the `coverage` map provided. Each of the values coming
+  out of the `dist` random process function has to undergo the mapping where
+  the `coverage` is defined as:
+
+    { :foo [0 75]
+      :bar [75 100] }
+
+  where the keys are the result values of the mapping, and the values are
+  the ranges that the random variable must fall into for the key to be the
+  resultant."
+  [dist cov]
+  (if (and dist cov)
+    (let [mush (fn [x] (some identity (for [[k [l h]] cov] (if (and (<= l x) (< x h)) k))))]
+      (map mush dist))))

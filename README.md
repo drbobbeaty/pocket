@@ -94,6 +94,33 @@ sequence or you'll have a nasty infinite loop on your hands.
      0.21170065909517813 0.2798397169892709)
 ```
 
+### Mapped Distributions
+
+While these mathematical random variables are very good as a start, there will
+be times that you want to create a new random variable based on the _output_
+of one of these, and specifically tailor the mapping from one of these base
+random variable generators to your desired application. This is the reason
+for the `mapped` function.
+
+The `mapped` function also generates an infinite sequence of values - just
+like all the other generators in the `base` namespace, but this one does so
+by taking, as input, another generator, and a map of how to map the output
+of that generator into the output of the `mapped` generator.
+
+For instance, say I wanted to have an unfair coin toss. I could do that with
+any number of schemes, but the `mapped` function makes that easy:
+```clojure
+  ;; define a uniform random variable from 0 to 100
+  (def und (uniform 0 100))
+  ;; define the mapping of the output
+  (def cov {:heads [0 55], :tails [55 100]})
+  ;; now define the mapped random sequence
+  (def bad-penny (mapped und cov))
+
+  => (frequencies (take 1000 (mapped und cov)))
+    {:heads 552, :tails 448}
+```
+
 ## Gorilla REPL
 
 This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help
