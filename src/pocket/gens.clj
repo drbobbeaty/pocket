@@ -7,7 +7,8 @@
             [clojure.tools.cli :refer [cli]]
             [clojure.tools.logging :refer [error info infof]]
             [clojure.math.numeric-tower :as math]
-            [pocket.base :as pb]))
+            [pocket.base :as pb]
+            [pocket.util :refer [to-2dp to-4dp]]))
 
 (defn pull-names
   "Function to randomly generate 'n' names from the two CSV files of first
@@ -42,3 +43,123 @@
   (let [cos (->> (slurp "resources/companies.csv") (.split #"\n") (map cs/trim))
         cnt (count cos)]
     (repeatedly #(nth cos (rand-int cnt)))))
+
+(defn mk-pipeline
+  "Function to take the sales pipeline configuration of the form:
+
+    [{ :name \"First Contact\"
+       :success { :distribution \"pass-fail\"
+                  :pass 0.75 }
+       :duration { :distribution \"normal\"
+                   :mean 4
+                   :stdev 2 } }
+     { :name \"Reach Decision Maker\"
+       :success { :distribution \"pass-fail\"
+                  :pass 0.50 },
+       :duration { :distribution \"normal\"
+                   :mean 5
+                   :stdev 2 } }
+     { :name \"Send Contract\"
+       :success { :distribution \"pass-fail\"
+                  :pass 0.40 }
+       :duration { :distribution \"normal\"
+                   :mean 7
+                   :stdev 2 } }
+     { :name \"Contract Signed\"
+       :success { :distribution \"pass-fail\"
+                  :pass 0.40 }
+       :duration { :distribution \"normal\"
+                   :mean 15
+                   :stdev 5 } }]
+
+  and return an infinite sequence of deal 'lives' where each step that
+  it passes is tagged appropriately, and with the appropriate time it
+  took on that step, and the last one will either be the `:pass` on the
+  last step, or a `:fail` on any one step - indicating that it was a
+  failed deal:
+
+    [{ :name \"First Contact\"
+       :disposition :pass
+       :duration 3.2 }
+     { :name \"Reach Decision Maker\"
+       :disposition :pass
+       :duration 4.2 }
+     { :name \"Send Contract\"
+       :disposition :pass
+       :duration 2.2 }
+     { :name \"Contract Signed\"
+       :disposition :pass
+       :duration 6.2 }]
+
+  for a complete 'won' deal, and:
+
+    [{ :name \"First Contact\"
+       :disposition :pass
+       :duration 3.2 }
+     { :name \"Reach Decision Maker\"
+       :disposition :fail }]
+
+  for a deal that was 'lost'."
+  [p-cfg]
+  (if (coll? p-cfg)
+    (let [stps (map :name p-cfg)
+          c-stps (count stps)
+          gen (apply map vector
+                (map #(map vector (repeat (:name %))
+                                  (pb/mk-var (:success %))
+                                  (pb/mk-var (:duration %))) p-cfg))]
+      (for [life gen]
+        (let [ol (vec (for [[n s d] life
+                            :while (= :pass s)]
+                        { :name n, :disposition s, :duration (to-4dp d) }))
+              c-ol (count ol)]
+          (if (< c-ol c-stps)
+            (conj ol { :name (nth stps c-ol) :disposition :fail })
+            ol))))))
+
+(defn deals
+  "Function to produce an infinite series of deals of the form:
+
+    { :sales-rep \"Amy Irving\"
+      :company \"AAA Travel\"
+      :value 502.34
+      :pipeline [{ :name \"First Contact\"
+                   :disposition :pass
+                   :duration 3.2 }
+                 { :name \"Reach Decision Maker\"
+                   :disposition :pass
+                   :duration 4.2 }
+                 { :name \"Send Contract\"
+                   :disposition :pass
+                   :duration 2.2 }
+                 { :name \"Contract Signed\"
+                   :disposition :pass
+                   :duration 6.2 }]
+      :duration 15.8
+      :disposition :pass }
+
+  for a successful deal (where all stages are passed), and for an
+  unsuccessful one:
+
+    { :sales-rep \"Donald Duck\"
+      :company \"Jack Daniels\"
+      :value 5022.34
+      :pipeline [{ :name \"First Contact\"
+                   :disposition :pass
+                   :duration 3.2 }
+                 { :name \"Reach Decision Maker\"
+                   :disposition :fail }]
+      :duration 3.2
+      :disposition :fail }
+  "
+  [cfg]
+  (let [reps (people-shoe (or (:sales_rep_count cfg) 10))
+        value (pb/mk-var (:deal_value cfg))
+        pipe (mk-pipeline (:pipeline cfg))]
+    (for [[r c v p] (map vector reps (companies) value pipe)]
+      { :sales-rep r
+        :company c
+        :value (to-2dp v)
+        :pipeline p
+        :duration (to-2dp (apply + (filter identity (map :duration p))))
+        :disposition (:disposition (last p)) })))

@@ -121,6 +121,153 @@ any number of schemes, but the `mapped` function makes that easy:
     {:heads 552, :tails 448}
 ```
 
+## The Basic Actors
+
+The goal is to model a company's overall sales pipeline - and what might
+need to be changed to make it more successful, the first phase is to model
+the typical company with a sales staff, deals, and a well-defined sales
+pipeline. To this end, there will be more complex _Generators_ and these
+will be the Sales Rep, and the Deal.
+
+### The Sales Pipeline
+
+The starting point for all this is the _Sales Pipeline_ - that series of
+steps that every deal much go through from first contact (cold call) to
+the final inking of the deal. While it's possible to think of including the
+shipping and returns policy, as that's a key differentiator in many businesses,
+we're going to skip that for now as it complicated the model at this point
+in time.
+
+For each step in the _Sales Pipeline_ we have to define several things
+about the step, but ultimately, the workflow of the _Sales Pipeline_ is
+that a deal either passes to the next stage, or it doesn't. And if it
+doesn't, then it's a dead deal. No sale. If it does, then the process
+repeats for that next _step transition_, and we continue until all the
+steps are successfully completed.
+
+The definition of the _Sales Pipeline_ is a JSON document:
+```json
+[{ "name": "First Contact",
+   "success": { "distribution": "pass-fail",
+                "pass": 0.75 },
+   "duration": { "distribution": "normal",
+                 "mean": 4,
+                 "stdev": 2 } },
+ { "name": "Reach Decision Maker",
+   "success": { "distribution": "pass-fail",
+                "pass": 0.50 },
+   "duration": { "distribution": "normal",
+                 "mean": 5,
+                 "stdev": 2 } },
+ { "name": "Send Contract",
+   "success": { "distribution": "pass-fail",
+                "pass": 0.40 },
+   "duration": { "distribution": "normal",
+                 "mean": 7,
+                 "stdev": 2 } },
+ { "name": "Contract Signed",
+   "success": { "distribution": "pass-fail",
+                "pass": 0.40 },
+   "duration": { "distribution": "normal",
+                 "mean": 15,
+                 "stdev": 5 } }]
+```
+where the pipeline engine converts this into something that's used in the
+simulation.
+
+### The Sales Rep
+
+The Sales Rep will initially be a non-disturbance, but this is _clearly_ not
+a valid assumption, as all the pipeline stages are really effected by the
+individual moving the deal through the sales pipeline.
+
+### The Company
+
+Again, the company is a non-effective actor at this point, and while this is
+fine for a first-order approximation, it's clearly not accurate for repeat
+business or even first contact, as some companies are harder to deal with
+than others.
+
+### The Deal
+
+The deal is the result of the sales pipeline, and the sales rep and the
+company all into one outcome. This will include the time required to work
+on the deal, it's final disposition, and the value of the deal. It will
+be represented by the clojure data structure:
+```clojure
+{ :sales-rep "Amy Irving"
+  :company "AAA Travel"
+  :value 502.34
+  :pipeline [{ :name "First Contact"
+               :disposition :pass
+               :duration 3.2 }
+             { :name "Reach Decision Maker"
+               :disposition :pass
+               :duration 4.2 }
+             { :name "Send Contract"
+               :disposition :pass
+               :duration 2.2 }
+             { :name "Contract Signed"
+               :disposition :pass
+               :duration 6.2 }]
+  :duration 15.8
+  :disposition :pass }
+```
+where this was a successful deal. For one that only made it through _some_
+of the steps of the sales pipeline:
+```clojure
+{ :sales-rep "Donald Duck"
+  :company "Jack Daniels"
+  :value 5022.34
+  :pipeline [{ :name "First Contact"
+               :disposition :pass
+               :duration 3.2 }
+             { :name "Reach Decision Maker"
+               :disposition :fail }]
+  :duration 3.2
+  :disposition :fail }
+```
+thus, you can see = even on the failed deals - where they failed, and the time
+it took to resolve them to that state.
+
+## The Tenant Configuration
+
+At this point, we have everything we need to start generating Deals. We simply
+need to put it all together in a single JSON file that controls all the actors:
+```json
+{
+  "name": "ABC Blocks",
+  "sales_rep_count": 10,
+  "deal_value": { "distribution": "log-normal",
+                  "mean": 5,
+                  "stdev": 1 },
+  "pipeline": [{ "name": "First Contact",
+                 "success": { "distribution": "pass-fail",
+                              "pass": 0.75 },
+                 "duration": { "distribution": "normal",
+                               "mean": 4,
+                               "stdev": 2 } },
+               { "name": "Reach Decision Maker",
+                 "success": { "distribution": "pass-fail",
+                              "pass": 0.50 },
+                 "duration": { "distribution": "normal",
+                               "mean": 5,
+                               "stdev": 2 } },
+               { "name": "Send Contract",
+                 "success": { "distribution": "pass-fail",
+                              "pass": 0.40 },
+                 "duration": { "distribution": "normal",
+                               "mean": 7,
+                               "stdev": 2 } },
+               { "name": "Contract Signed",
+                 "success": { "distribution": "pass-fail",
+                              "pass": 0.40 },
+                 "duration": { "distribution": "normal",
+                               "mean": 15,
+                               "stdev": 5 } }]
+}
+```
+
 ## Gorilla REPL
 
 This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help
