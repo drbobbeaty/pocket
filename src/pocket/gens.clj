@@ -163,3 +163,35 @@
         :pipeline p
         :duration (to-2dp (apply + (filter identity (map :duration p))))
         :disposition (:disposition (last p)) })))
+
+(defn simulate-sales
+  "Function to simluate the sales for a mythical tenant based on the config
+  profile provided and the number of days to simulate. The tenant config has
+  the configuration of what distribution to use for determining the number
+  of deals to start on any one day, and then for that day, a full series of
+  deals will be run, and the results determined.
+
+  This will continue for every day in the simulation. At the end, the values
+  and durations of each 'successful' deal will be tallied, and placed in a
+  timeline of 'revenue' like:
+
+  { :sales (sequence of deals by day)
+    :revenue ([32.9 139.85] [33.9 139.85] [34.9 139.85] [35.9 139.85]
+              [39.9 139.85] [40.9 139.85] [41.9 139.85]) }
+
+  where each tuple is the days since the start of the simulation and the
+  value of that revenue. So these can then be added up, plotted, etc. and
+  you can see the simulated revenue."
+  [cfg & [days]]
+  (if (and (map? cfg) (pos? days))
+    (let [dpd (pb/mk-var (:deals_per_day cfg))
+          dg (partition 10 (deals cfg))
+          hist (for [[d n dl] (map vector (range days) dpd dg)
+                     :let [sd (take n dl)
+                           rev (for [w (filter #(= :pass (:disposition %)) sd)]
+                                 [(+ d (:duration w)) (:value w)])]]
+                 { :day d
+                   :deals sd
+                   :revenue rev })]
+      { :sales hist
+        :revenue (mapcat :revenue hist) })))
