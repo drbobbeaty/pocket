@@ -291,7 +291,7 @@ Note the URL in the log message! This is where you point your browser.
 
 ![Using the correct G-REPL URL](https://bitbucket.org/applieddl/pocket/raw/master/doc/img/grepl-url.png)
 
-<img src="doc/img/grepl-url.png" width="421" height="71" border="0" style="border-color=#ffffff;" />
+![Using](doc/img/grepl-url.png)
 
 At this point, look to the three horizontal bars in the upper-right-hand corner.
 
