@@ -289,11 +289,15 @@ Ctrl+C to exit.
 ```
 Note the URL in the log message! This is where you point your browser.
 
-![Using the correct G-REPL URL](https://bitbucket.org/applieddl/pocket/raw/master/doc/img/grepl-url.png)
+<p align="center">
+  <img src="doc/img/grepl-url.png" width="421" height="74" border="0" />
+</p>
 
 At this point, look to the three horizontal bars in the upper-right-hand corner.
 
-![Locating the G-REPL Menu](https://bitbucket.org/applieddl/pocket/raw/master/doc/img/grepl-intro.png)
+<p align="center">
+  <img src="doc/img/grepl-intro.png" width="350" height="249" border="0" />
+</p>
 
 Click on them for actions, and then select "Load a Workspace" and then type in:
 ```
@@ -301,4 +305,6 @@ doc/uniform.clj
 ```
 and hit return. This will show you the uniform distribution under test.
 
-![The G-REPL page for Uniform](https://bitbucket.org/applieddl/pocket/raw/master/doc/img/grepl-uniform.png)
+<p align="center">
+  <img src="doc/img/grepl-uniform.png" width="350" height="249" border="0" />
+</p>
