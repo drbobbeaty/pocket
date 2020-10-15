@@ -49,16 +49,20 @@ sequence or you'll have a nasty infinite loop on your hands.
 ### Log-Normal Distribution
 
 The standard log-normal distribution is an infinite sequence created where:
+
 ```
 v = exp(mean + stdev * x)
 ```
+
 where `x` is the Gaussian random variable with a zero mean and a standard
 deviation of 1.
 
 In clojure this is done with:
+
 ```clojure
 (log-normal mean stdev)
 ```
+
 where the parameters are _optional_ and default to 0 and 1.
 
 It's important - as with all the generators to _limit_ the data to some finite
@@ -73,16 +77,20 @@ sequence or you'll have a nasty infinite loop on your hands.
 ### Exponential Distribution
 
 The exponential distribution is an infinite sequence created where:
+
 ```
 v = ln(1 - x)/(-lambda)
 ```
+
 where `x` is uniform random variable on [0, 1) and `lambda` is the _rate parameter_
 for the distribution.
 
 In clojure this is done with:
+
 ```clojure
 (exponential lambda)
 ```
+
 where the parameter is _**required**_ and must be positive.
 
 It's important - as with all the generators to _limit_ the data to some finite
@@ -109,6 +117,7 @@ of that generator into the output of the `mapped` generator.
 
 For instance, say I wanted to have an unfair coin toss. I could do that with
 any number of schemes, but the `mapped` function makes that easy:
+
 ```clojure
 ;; define a uniform random variable from 0 to 100
 (def und (uniform 0 100))
@@ -146,6 +155,7 @@ repeats for that next _step transition_, and we continue until all the
 steps are successfully completed.
 
 The definition of the _Sales Pipeline_ is a JSON document:
+
 ```json
 [{ "name": "First Contact",
    "success": { "distribution": "pass-fail",
@@ -172,6 +182,7 @@ The definition of the _Sales Pipeline_ is a JSON document:
                  "mean": 15,
                  "stdev": 5 } }]
 ```
+
 where the pipeline engine converts this into something that's used in the
 simulation.
 
@@ -194,6 +205,7 @@ The deal is the result of the sales pipeline, and the sales rep and the
 company all into one outcome. This will include the time required to work
 on the deal, it's final disposition, and the value of the deal. It will
 be represented by the clojure data structure:
+
 ```clojure
 { :sales-rep "Amy Irving"
   :company "AAA Travel"
@@ -213,8 +225,10 @@ be represented by the clojure data structure:
   :duration 15.8
   :disposition :pass }
 ```
+
 where this was a successful deal. For one that only made it through _some_
 of the steps of the sales pipeline:
+
 ```clojure
 { :sales-rep "Donald Duck"
   :company "Jack Daniels"
@@ -227,6 +241,7 @@ of the steps of the sales pipeline:
   :duration 3.2
   :disposition :fail }
 ```
+
 thus, you can see = even on the failed deals - where they failed, and the time
 it took to resolve them to that state.
 
@@ -234,6 +249,7 @@ it took to resolve them to that state.
 
 At this point, we have everything we need to start generating Deals. We simply
 need to put it all together in a single JSON file that controls all the actors:
+
 ```json
 {
   "name": "ABC Blocks",
@@ -276,10 +292,13 @@ need to put it all together in a single JSON file that controls all the actors:
 This project uses [Gorilla REPL](http://gorilla-repl.org/index.html) to help
 display things from this project. It's very useful in what it does. The way
 to get it started is to first, make sure all the dependencies are loaded:
+
 ```bash
 $ lein deps
 ```
+
 and then run the [Gorilla REPL](http://gorilla-repl.org/index.html):
+
 ```bash
 $ lein gorilla
 Gorilla-REPL: 0.3.4
@@ -287,6 +306,7 @@ Started nREPL server on port 54782
 Running at http://127.0.0.1:54784/worksheet.html .
 Ctrl+C to exit.
 ```
+
 Note the URL in the log message! This is where you point your browser.
 
 <p align="center">
@@ -300,9 +320,11 @@ At this point, look to the three horizontal bars in the upper-right-hand corner.
 </p>
 
 Click on them for actions, and then select "Load a Workspace" and then type in:
+
 ```
 doc/uniform.clj
 ```
+
 and hit return. This will show you the uniform distribution under test.
 
 <p align="center">
